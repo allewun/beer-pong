@@ -1,0 +1,92 @@
+<html>
+    <head>
+        <title>Beer Pong</title>
+        <style type="text/css">
+            .table {
+                width: 350px;
+                height: 850px;
+                background: #c0c0c0;
+                position: relative;
+            }
+
+            .player {
+                width: 300px;
+                height: 256px;
+                margin: 0 25px;
+            }
+
+            #opponent {
+
+            }
+
+            #me {
+                position: absolute;
+                bottom: 0;
+            }
+
+            .row {
+                display: block;
+                width: 300px;
+                height: 64px;
+                text-align: center;
+            }
+
+            [class^=cup] {
+                display: inline-block;
+                width: 64px;
+                height: 64px;
+                border: 2px solid red;
+                border-radius: 64px;
+                background: #fff;
+                box-shadow: 0 0 3px rgba(0,0,0,.2);
+/*                background-image: url(cup.png);
+                background-size: 64px 64px;*/
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="table">
+            <div id="opponent" class="player">
+                <div class="row">
+                    <div class="cup-7"></div>
+                    <div class="cup-8"></div>
+                    <div class="cup-9"></div>
+                    <div class="cup-10"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-4"></div>
+                    <div class="cup-5"></div>
+                    <div class="cup-6"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-2"></div>
+                    <div class="cup-3"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-1"></div>
+                </div>
+            </div>
+            <div id="me" class="player">
+                <div class="row">
+                    <div class="cup-1"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-2"></div>
+                    <div class="cup-3"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-4"></div>
+                    <div class="cup-5"></div>
+                    <div class="cup-6"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-7"></div>
+                    <div class="cup-8"></div>
+                    <div class="cup-9"></div>
+                    <div class="cup-10"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
