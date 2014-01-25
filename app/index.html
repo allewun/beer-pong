@@ -1,278 +1,280 @@
 <html>
-<head>
+    <head>
+        <title>Beer Pong</title>
+
     <script src="https://cdn.firebase.com/v0/firebase.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://www.firebase.com/css/example.css">
-</head>
-
-<body class="beerpong-body">
-    <div>
-        <canvas id="canvas0" width="300" height="600"></canvas>
-    </div>
-    <input type="button" id="restartButton" value="Restart Game" class="hide" />
-    <div id="gameInProgress">Game is in progress.  You will automatically join if either player leaves.</div>
 
 
-<script>
-
-    var canvas = $("#canvas0").get(0);
-    if (!canvas || !canvas.getContext || !canvas.getContext('2d'))
-        alert("You must use a browser that supports HTML5 Canvas to run this demo.");
-
-    function start() {
-        var beerPongRef = new Firebase('https://beer-pong.firebaseio.com/');
-        var beerPongController = new BeerPong.Controller(beerPongRef);
-
-        beerPongRef.auth("iKCCsctxphzcK4mkO99UHfz3RWOWqeNhCUlU55BH", function(error) {
-            if(error) {
-                console.log("Login Failed!", error);
-            } else {
-                console.log("Login Succeeded!");
+        <style type="text/css">
+            .table-wrap {
+      -webkit-perspective: 2500px;
+         -moz-perspective: 2500px;
+           -o-perspective: 2500px;
+              perspective: 2500px;
+              position: relative;
+              margin-left: 400px;
+              background: #36c;
             }
-        });
+
+            .table {
+                width: 350px;
+                height: 1000px;
+                background: #eee;
+                position: relative;
+      -webkit-transform: rotateX( 60deg );
+         -moz-transform: rotateX( 60deg );
+           -o-transform: rotateX( 60deg );
+              transform: rotateX( 60deg );
+              border: 5px solid black;
+              border-radius: 30px;
+              box-shadow: 0 1px 0 #000,
+                          0 3px 0 #000,
+                          0 5px 0 #000,
+                          0 7px 0 #000,
+                          0 9px 0 #000,
+                          0 11px 0 #000;
+            }
+
+            .player {
+                width: 300px;
+                height: 256px;
+                margin: 0 25px;
+            }
+
+            #opponent {
+
+            }
+
+            #me {
+                position: absolute;
+                bottom: 60px;
+            }
+
+            .row {
+                display: block;
+                width: 300px;
+                height: 64px;
+                text-align: center;
+            }
+
+            [class*=cup] {
+                display: inline-block;
+                width: 64px;
+                height: 64px;
+                border: 2px solid red;
+                border-radius: 64px;
+                box-shadow: 0 0 3px rgba(0,0,0,.2),
+                            0 2px 1px #c51932,
+                            0 4px 1px #c51932,
+                            0 6px 1px #c51932,
+                            1px 8px 1px #c51932,
+                            1px 10px 1px #c51932,
+                            1px 12px 1px #c51932,
+                            2px 14px 1px #c51932,
+                            2px 16px 1px #c51932,
+                            2px 18px 1px #c51932,
+                            2px 20px 1px #c51932,
+                            3px 22px 1px #c51932,
+                            3px 24px 1px #c51932,
+                            3px 26px 1px #c51932,
+                            3px 28px 1px #c51932,
+                            3px 30px 7px rgba(0,0,0,.4);
+            }
+
+            #opponent [class*=cup] {
+                background: radial-gradient(circle at bottom, #e5a016 28%,#f6e6b4 51%,#ffffff 54%,#ffffff 54%); /* W3C */
+            }
+
+            #me [class*=cup] {
+                background: radial-gradient(circle at bottom, #e5a016 32%,#f6e6b4 55%,#ffffff 61%); /* W3C */
+            }
+
+            [class*=cup]:hover {
+                cursor: pointer;
+                box-shadow: 0 0 3px rgba(0,0,0,.2),
+                            0 2px 1px #962238,
+                            0 4px 1px #962238,
+                            0 6px 1px #962238,
+                            1px 8px 1px #962238,
+                            1px 10px 1px #962238,
+                            1px 12px 1px #962238,
+                            2px 14px 1px #962238,
+                            2px 16px 1px #962238,
+                            2px 18px 1px #962238,
+                            2px 20px 1px #962238,
+                            3px 22px 1px #962238,
+                            3px 24px 1px #962238,
+                            3px 26px 1px #962238,
+                            3px 28px 1px #962238,
+                            3px 30px 8px rgba(0,0,0,.6);
+            }
+
+            .hide {
+              visibility: hidden;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="table-wrap">
+        <div class="table">
+            <div id="opponent" class="player">
+                <div class="row">
+                    <div class="cup-9"></div>
+                    <div class="cup-8"></div>
+                    <div class="cup-7"></div>
+                    <div class="cup-6"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-5"></div>
+                    <div class="cup-4"></div>
+                    <div class="cup-3"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-2"></div>
+                    <div class="cup-1"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-0"></div>
+                </div>
+            </div>
+            <div id="me" class="player">
+                <div class="row">
+                    <div class="cup-0"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-1"></div>
+                    <div class="cup-2"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-3"></div>
+                    <div class="cup-4"></div>
+                    <div class="cup-5"></div>
+                </div>
+                <div class="row">
+                    <div class="cup-6"></div>
+                    <div class="cup-7"></div>
+                    <div class="cup-8"></div>
+                    <div class="cup-9"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <script>
+
+  // Get a reference to the root of the chat data.
+  var firebase = new Firebase('https://beer-pong.firebaseio.com/');
+  var currentPlayer = null;
+
+  var data = {
+    p1: {
+      cups: null,
+      online: null
+    },
+
+    p2: {
+      cups: null,
+      online: null
     }
+  };
 
-    var BeerPong = { };
+  firebase.auth("iKCCsctxphzcK4mkO99UHfz3RWOWqeNhCUlU55BH", function(error) {
+    if(error) {
+        console.log("Login Failed!", error);
+    } else {
+        console.log("Login Succeeded!");
+      }
+  });
 
-    BeerPong.BOARD[0] = "1111111111";
-    BeerPong.BOARD[1] = "1111111111";
 
-    // BOARD
-    BeerPong.Board = function (canvas, playerRef) {
-        this.context = canvas.getContext('2d');
-        this.playerRef = playerRef;
-        this.snapshot = null;
-        this.isMyTurn = false;
+  // update data
+  firebase.on("value", function(snapshot) {
+    data.p1.online = snapshot.val().p1.online;
+    data.p2.online = snapshot.val().p2.online;
 
-        // Listen for changes to our board.
-        var self = this;
-        playerRef.on('value', function(snapshot) {
-            self.snapshot = snapshot;
-            self.draw();
-        });
-    };
+    data.p1.cups = snapshot.val().p1.cups;
+    data.p2.cups = snapshot.val().p2.cups;
 
-    BeerPong.Board.prototype.draw = function () {
-        this.context.clearRect(0, 0, BeerPong.BOARD_WIDTH_PIXELS, BeerPong.BOARD_HEIGHT_PIXELS);
+    var p1temp = data.p1.cups.toString().split("");
+    var p2temp = data.p2.cups.toString().split("");
 
-        // Iterate over columns / rows in board data and draw each non-empty block.
-        for (var x = 0; x < BeerPong.BOARD_WIDTH; x++) {
-            for (var y = 0; y < BeerPong.BOARD_HEIGHT; y++) {
-                var colorValue = this.getBlockVal(x, y);
-                if (colorValue != ' ') {
-                    // Calculate block position and draw a correctly-colored square.
-                    var left = x * BeerPong.BLOCK_SIZE_PIXELS;
-                    var top = y * BeerPong.BLOCK_SIZE_PIXELS;
-                    this.context.fillStyle = BeerPong.BLOCK_COLORS[colorValue];
-                    this.context.fillRect(left, top, BeerPong.BLOCK_SIZE_PIXELS, BeerPong.BLOCK_SIZE_PIXELS);
-                    this.context.lineWidth = 1;
-                    this.context.strokeStyle = BeerPong.BLOCK_BORDER_COLOR;
-                    this.context.strokeRect(left, top, BeerPong.BLOCK_SIZE_PIXELS, BeerPong.BLOCK_SIZE_PIXELS);
-                }
-            }
+    for (var i = 0; i < p1temp.length; i++) {
+      if (p1temp[i] == "0") {
+        if (currentPlayer == "p1") {
+          $('#me .cup-' + i).addClass("hide");
         }
-
-        // If there's a falling piece, draw it.
-        if (this.snapshot !== null && this.snapshot.hasChild('piece')) {
-            var piece = BeerPong.Piece.fromSnapshot(this.snapshot.child('piece'));
-            this.drawPiece(piece);
+        else if (currentPlayer == "p2") {
+          $('#opponent .cup-' + i).addClass("hide");
         }
+      }
     }
 
-    BeerPong.Board.prototype.drawBall = function () {
-
-    }
-
-    /**
-    * Clear the board contents.
-    */
-    BeerPong.Board.prototype.clear = function () {
-        for (var row = 0; row < BeerPong.BOARD_HEIGHT; row++) {
-            this.setRow(row, BeerPong.EMPTY_LINE);
+    for (var i = 0; i < p2temp.length; i++) {
+      if (p2temp[i] == "0") {
+        if (currentPlayer == "p1") {
+          $('#opponent .cup-' + i).addClass("hide");
         }
-    };
-
-    BeerPong.Board.prototype.removeCup = function () {
-
-    }
-
-    BeerPong.Cup.prototype.markCup = function () {
-
-    }
-
-    // BALL
-    BeerPong.Ball = function () {
-        this.x
-        this.theta
-        this.power
-    }
-
-    BeerPong.Ball.prototype.throwBall = fucntion () {
-
-    }
-
-    BeerPong.Ball.prototype.setX = function () {
-        var x = 0;
-        var down = false;
-        setInterval(function () {
-            if (down) {
-                x--;
-            }
-            x++;
-
-            console.log(x);
-        }, 16);
-
-        $(document).keypress()
-    }
-
-    BeerPong.Ball.prototype.setTheta = function () {
-
-    }
-
-    BeerPong.Ball.prototype.setPower = function () {
-
-    }
-
-
-
-
-
-
-
-
-
-    /**
-    * Manages joining the game, responding to keypresses, making the piece drop, etc.
-    */
-    BeerPong.PlayingState = { Watching: 0, Joining: 1, Playing: 2 };
-
-    // CONTROLLER
-    BeerPong.Controller = function (beerPongRef) {
-        this.beerPongRef = beerPongRef;
-        this.createBoard();
-
-        this.playingState = BeerPong.PlayingState.Watching;
-        this.waitToJoin();
-    };
-
-
-    BeerPong.Controller.prototype.createBoard = function () {
-        for(var i = 0; i <= 1; i++) {
-            var playerRef = this.beerPongRef.child('player' + i);
-            var canvas = $('#canvas' + i).get(0);
-            this.boards.push(new BeerPong.Board(canvas, playerRef));
+        else if (currentPlayer == "p2") {
+          $('#me .cup-' + i).addClass("hide");
         }
-    };
+      }
+    }
 
+    if (!currentPlayer) {
+      if (!data.p1.online) {
+        currentPlayer = "p1";
+        firebase.child("p1/online").set(true);
+      }
+      else if (!data.p2.online) {
+        currentPlayer = "p2";
+        firebase.child("p2/online").set(true);
+      }
+    }
 
-    BeerPong.Controller.prototype.waitToJoin = function() {
-        var self = this;
+    //alert("You are " + currentPlayer);
 
-        // Listen on 'online' location for player0 and player1.
-        this.beerPongRef.child('player0/online').on('value', function(onlineSnap) {
-            if (onlineSnap.val() === null && self.playingState === BeerPong.PlayingState.Watching) {
-                self.tryToJoin(0);
-            }
-        });
+    // disconnect
+    firebase.child(currentPlayer + "/online").onDisconnect().set(false);
 
-        this.beerPongRef.child('player1/online').on('value', function(onlineSnap) {
-            if (onlineSnap.val() === null && self.playingState === BeerPong.PlayingState.Watching) {
-                self.tryToJoin(1);
-            }
-        });
-    };
+  });
 
+  function shot(player, cup) {
+    var score = data[player].cups;
+    console.log(score);
+    var temp = score.toString().split("");
+    temp[cup] = "0";
+    score = temp.join("");
+    firebase.child(player + "/cups").set(score);
+  }
 
-    /**
-    * Try to join the game as the specified playerNum.
-    */
-    BeerPong.Controller.prototype.tryToJoin = function(playerNum) {
-    // Set ourselves as joining to make sure we don't try to join as both players. :-)
-        this.playingState = BeerPong.PlayingState.Joining;
+  // When the user presses enter on the message input, write the message to firebase.
+  $('[class^=cup]').click(function (e) {
+      var team = $(this).parent().parent().attr("id");
+      var cup = $(this).attr("class").replace(/[^\d]+/g, '');
 
-        // Use a transaction to make sure we don't conflict with other people trying to join.
-        var self = this;
-        this.beerPongRef.child('player' + playerNum + '/online').transaction(function(onlineVal) {
-            if (onlineVal === null) {
-                return true; // Try to set online to true.
-            } else {
-                return; // Somebody must have beat us.  Abort the transaction.
-            }
-        }, function(error, committed) {
-            if (committed) { // We got in!
-                self.playingState = BeerPong.PlayingState.Playing;
-                self.startPlaying(playerNum);
-            } else {
-                self.playingState = BeerPong.PlayingState.Watching;
-            }
-        });
-    };
-
-
-    /**
-    * Once we've joined, enable controlling our player.
-    */
-    BeerPong.Controller.prototype.startPlaying = function (playerNum) {
-        this.myPlayerRef = this.beerPongRef.child('player' + playerNum);
-        this.opponentPlayerRef = this.beerPongRef.child('player' + (1 - playerNum));
-        this.myBoard = this.boards[playerNum];
-        this.myBoard.isMyBoard = true;
-        this.myBoard.draw();
-
-        // Clear our 'online' status when we disconnect so somebody else can join.
-        this.myPlayerRef.child('online').onDisconnect().remove();
-
-        // Detect when game is restarted by other player.
-        this.watchForRestart();
-
-        $('#gameInProgress').hide();
-
-        var self = this;
-        $('#restartButton').show();
-        $("#restartButton").click(function () {
-            self.restartGame();
-        });
-
-        this.initializePiece();
-        this.enableKeyboard();
-        this.resetGravity();
-    };
-
-    BeerPong.Controller.prototype.watchForRestart = function () {
-        var self = this;
-        var restartRef = this.myPlayerRef.child('restart');
-        restartRef.on('value', function(snap) {
-            if (snap.val() === 1) {
-                restartRef.set(0);
-                self.resetMyBoardAndCups();
-            }
-        });
-    };
-
-
-    BeerPong.Controller.prototype.gameOver = function () {
-        this.restartGame();
-    };
-
-
-    BeerPong.Controller.prototype.restartGame = function () {
-        this.opponentPlayerRef.child('restart').set(1);
-        this.resetMyBoardAndPiece();
-    };
-
-
-    BeerPong.Controller.prototype.resetMyBoardAndCups = function () {
-        this.myBoard.clear();
-        var newPiece = new BeerPong.Piece();
-        newPiece.writeToFirebase(this.myPlayerRef.child('piece'));
-    };
-
-
-
-    start();
+      if (currentPlayer == "p1") {
+          // p1 attacked p2
+          if (team == "opponent") {
+            shot("p2", cup);
+          }
+          else {
+            shot("p1", cup);
+          }
+      }
+      else if (currentPlayer == "p2") {
+        // p2 attacks p1
+        if (team == "opponent") {
+          shot("p1", cup);
+        }
+        else {
+          shot("p2", cup);
+        }
+      }
+  });
 
 </script>
 
-</body>
+    </body>
 </html>
