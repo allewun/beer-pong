@@ -1,0 +1,107 @@
+.container {
+    -webkit-perspective: 2500px;
+       -moz-perspective: 2500px;
+         -o-perspective: 2500px;
+            perspective: 2500px;
+    position: relative;
+    /*margin-left: 400px;*/
+    background: #36c;
+}
+
+.table {
+    width: 350px;
+    height: 1000px;
+    background: #eee;
+    margin: 0 auto;
+    position: relative;
+    -webkit-transform: rotateX( 60deg );
+       -moz-transform: rotateX( 60deg );
+         -o-transform: rotateX( 60deg );
+            transform: rotateX( 60deg );
+    border: 5px solid black;
+    border-radius: 30px;
+    box-shadow: 0 1px 0 #000,
+                0 3px 0 #000,
+                0 5px 0 #000,
+                0 7px 0 #000,
+                0 9px 0 #000,
+                0 11px 0 #000;
+}
+
+.player {
+    width: 300px;
+    height: 256px;
+    margin: 0 25px;
+}
+
+#opponent {
+
+}
+
+#me {
+    position: absolute;
+    bottom: 60px;
+}
+
+.row {
+    display: block;
+    width: 300px;
+    height: 64px;
+    text-align: center;
+}
+
+[class*=cup] {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+    border: 2px solid red;
+    border-radius: 64px;
+    box-shadow: 0 0 3px rgba(0,0,0,.2),
+                0 2px 1px #c51932,
+                0 4px 1px #c51932,
+                0 6px 1px #c51932,
+                1px 8px 1px #c51932,
+                1px 10px 1px #c51932,
+                1px 12px 1px #c51932,
+                1px 14px 1px #c51932,
+                1px 16px 1px #c51932,
+                1px 18px 1px #c51932,
+                1px 20px 1px #c51932,
+                1px 22px 1px #c51932,
+                1px 24px 1px #c51932,
+                1px 26px 1px #c51932,
+                1px 28px 1px #c51932,
+                1px 30px 7px rgba(0,0,0,.4);
+}
+
+#opponent [class*=cup] {
+    background: radial-gradient(circle at bottom, #e5a016 28%,#f6e6b4 51%,#ffffff 54%,#ffffff 54%); /* W3C */
+}
+
+#me [class*=cup] {
+    background: radial-gradient(circle at bottom, #e5a016 32%,#f6e6b4 55%,#ffffff 61%); /* W3C */
+}
+
+[class*=cup]:hover {
+    cursor: pointer;
+    box-shadow: 0 0 3px rgba(0,0,0,.2),
+                0 2px 1px #962238,
+                0 4px 1px #962238,
+                0 6px 1px #962238,
+                1px 8px 1px #962238,
+                1px 10px 1px #962238,
+                1px 12px 1px #962238,
+                1px 14px 1px #962238,
+                1px 16px 1px #962238,
+                1px 18px 1px #962238,
+                1px 20px 1px #962238,
+                1px 22px 1px #962238,
+                1px 24px 1px #962238,
+                1px 26px 1px #962238,
+                1px 28px 1px #962238,
+                1px 30px 8px rgba(0,0,0,.6);
+}
+
+.hide {
+	visibility: hidden;
+}
