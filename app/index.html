@@ -21,8 +21,16 @@
     alert("You must use a browser that supports HTML5 Canvas to run this demo.");
 
   function start() {
-    var tetrisRef = new Firebase('https://ywbnvllxl7o.firebaseio-demo.com/');
+    var tetrisRef = new Firebase('https://beer-pong.firebaseio.com/');
     var tetrisController = new Tetris.Controller(tetrisRef);
+
+    tetrisRef.auth("iKCCsctxphzcK4mkO99UHfz3RWOWqeNhCUlU55BH", function(error) {
+      if(error) {
+        console.log("Login Failed!", error);
+      } else {
+        console.log("Login Succeeded!");
+      }
+    });
   }
 
   var Tetris = { };
