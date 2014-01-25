@@ -1,0 +1,5 @@
+{
+  "firebase": "beer-pong",
+  "public": "app",
+  "rules": "config/security-rules.json"
+}
