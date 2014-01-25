@@ -2,11 +2,25 @@
     <head>
         <title>Beer Pong</title>
         <style type="text/css">
+            .table-wrap {
+      -webkit-perspective: 2500px;
+         -moz-perspective: 2500px;
+           -o-perspective: 2500px;
+              perspective: 2500px;
+              position: relative;
+              margin-left: 400px;
+              background: #36c;
+            }
+
             .table {
                 width: 350px;
-                height: 850px;
+                height: 1000px;
                 background: #c0c0c0;
                 position: relative;
+      -webkit-transform: rotateX( 60deg );
+         -moz-transform: rotateX( 60deg );
+           -o-transform: rotateX( 60deg );
+              transform: rotateX( 60deg );
             }
 
             .player {
@@ -21,7 +35,7 @@
 
             #me {
                 position: absolute;
-                bottom: 0;
+                bottom: 60px;
             }
 
             .row {
@@ -37,15 +51,49 @@
                 height: 64px;
                 border: 2px solid red;
                 border-radius: 64px;
-                background: #fff;
-                box-shadow: 0 0 3px rgba(0,0,0,.2);
-/*                background-image: url(cup.png);
-                background-size: 64px 64px;*/
+                background: radial-gradient(circle at bottom, #e5a016 28%,#f6e6b4 51%,#ffffff 54%,#ffffff 54%); /* W3C */
+                box-shadow: 0 0 3px rgba(0,0,0,.2),
+                            0 2px 1px #c51932,
+                            0 4px 1px #c51932,
+                            0 6px 1px #c51932,
+                            1px 8px 1px #c51932,
+                            1px 10px 1px #c51932,
+                            1px 12px 1px #c51932,
+                            1px 14px 1px #c51932,
+                            2px 16px 1px #c51932,
+                            2px 18px 1px #c51932,
+                            2px 20px 1px #c51932,
+                            2px 22px 1px #c51932,
+                            2px 24px 1px #c51932,
+                            2px 26px 1px #c51932,
+                            2px 28px 1px #c51932,
+                            2px 30px 7px rgba(0,0,0,.4);
+            }
+
+            [class^=cup]:hover {
+                cursor: pointer;
+                box-shadow: 0 0 3px rgba(0,0,0,.2),
+                            0 2px 1px red,
+                            0 4px 1px red,
+                            0 6px 1px red,
+                            1px 8px 1px red,
+                            1px 10px 1px red,
+                            1px 12px 1px red,
+                            1px 14px 1px red,
+                            2px 16px 1px red,
+                            2px 18px 1px red,
+                            2px 20px 1px red,
+                            2px 22px 1px red,
+                            2px 24px 1px red,
+                            2px 26px 1px red,
+                            2px 28px 1px red,
+                            2px 30px 8px rgba(0,0,0,.6);
             }
 
         </style>
     </head>
     <body>
+        <div class="table-wrap">
         <div class="table">
             <div id="opponent" class="player">
                 <div class="row">
@@ -87,6 +135,7 @@
                     <div class="cup-10"></div>
                 </div>
             </div>
+        </div>
         </div>
     </body>
 </html>
