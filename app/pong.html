@@ -1,6 +1,13 @@
 <html>
     <head>
         <title>Beer Pong</title>
+
+        <script type="text/javascript">
+
+
+        </script>
+
+
         <style type="text/css">
             .table-wrap {
       -webkit-perspective: 2500px;
@@ -53,13 +60,12 @@
                 text-align: center;
             }
 
-            [class^=cup] {
+            [class*=cup] {
                 display: inline-block;
                 width: 64px;
                 height: 64px;
                 border: 2px solid red;
                 border-radius: 64px;
-                background: radial-gradient(circle at bottom, #e5a016 28%,#f6e6b4 51%,#ffffff 54%,#ffffff 54%); /* W3C */
                 box-shadow: 0 0 3px rgba(0,0,0,.2),
                             0 2px 1px #c51932,
                             0 4px 1px #c51932,
@@ -67,35 +73,43 @@
                             1px 8px 1px #c51932,
                             1px 10px 1px #c51932,
                             1px 12px 1px #c51932,
-                            1px 14px 1px #c51932,
+                            2px 14px 1px #c51932,
                             2px 16px 1px #c51932,
                             2px 18px 1px #c51932,
                             2px 20px 1px #c51932,
-                            2px 22px 1px #c51932,
-                            2px 24px 1px #c51932,
-                            2px 26px 1px #c51932,
-                            2px 28px 1px #c51932,
-                            2px 30px 7px rgba(0,0,0,.4);
+                            3px 22px 1px #c51932,
+                            3px 24px 1px #c51932,
+                            3px 26px 1px #c51932,
+                            3px 28px 1px #c51932,
+                            3px 30px 7px rgba(0,0,0,.4);
             }
 
-            [class^=cup]:hover {
+            #opponent [class*=cup] {
+                background: radial-gradient(circle at bottom, #e5a016 28%,#f6e6b4 51%,#ffffff 54%,#ffffff 54%); /* W3C */
+            }
+
+            #me [class*=cup] {
+                background: radial-gradient(circle at bottom, #e5a016 32%,#f6e6b4 55%,#ffffff 61%); /* W3C */
+            }
+
+            [class*=cup]:hover {
                 cursor: pointer;
                 box-shadow: 0 0 3px rgba(0,0,0,.2),
-                            0 2px 1px red,
-                            0 4px 1px red,
-                            0 6px 1px red,
-                            1px 8px 1px red,
-                            1px 10px 1px red,
-                            1px 12px 1px red,
-                            1px 14px 1px red,
-                            2px 16px 1px red,
-                            2px 18px 1px red,
-                            2px 20px 1px red,
-                            2px 22px 1px red,
-                            2px 24px 1px red,
-                            2px 26px 1px red,
-                            2px 28px 1px red,
-                            2px 30px 8px rgba(0,0,0,.6);
+                            0 2px 1px #962238,
+                            0 4px 1px #962238,
+                            0 6px 1px #962238,
+                            1px 8px 1px #962238,
+                            1px 10px 1px #962238,
+                            1px 12px 1px #962238,
+                            2px 14px 1px #962238,
+                            2px 16px 1px #962238,
+                            2px 18px 1px #962238,
+                            2px 20px 1px #962238,
+                            3px 22px 1px #962238,
+                            3px 24px 1px #962238,
+                            3px 26px 1px #962238,
+                            3px 28px 1px #962238,
+                            3px 30px 8px rgba(0,0,0,.6);
             }
 
         </style>
