@@ -233,7 +233,8 @@ h1 {
 }
 
 .videoSubtitle {
-    /*font-family: 'Permanent Marker';*/
+    font-family: 'Permanent Marker';
+    text-align: center;
     background: rgba(0,0,0,.3);
     color: #fff;
     text-shadow: 0 2px 1px rgba(0,0,0,.7);
