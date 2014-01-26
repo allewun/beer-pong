@@ -153,8 +153,6 @@ function shootBall() {
     }
 }
 
-updateShotStatus
-
 function shot(player, cup) {
     if (!myTurn) {
         return;
