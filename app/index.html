@@ -9,10 +9,17 @@
     </head>
     <body>
         <div class="container">
+            <h1>BEER PONG</h1>
             <div class="controls">
                 <input type="button" id="restartButton" value="Restart Game" onClick="restartGame()">
                 <span id="status"></span>
             </div>
+            <div id="aiming">
+                <input type='number' id='xCoordinate' placeholder='X Coordinate'>
+                <input type='number' id='theta' placeholder='Degrees'>
+                <input type='number' id='power' placeholder='Power'>
+            </div>
+
             <div class="table">
                 <div id="opponent" class="player">
                     <div class="row">
@@ -56,10 +63,6 @@
                 </div>
             </div>
         </div>
-
-        <input type='number' id='xCoordinate' placeholder='X Coordinate'>
-        <input type='number' id='theta' placeholder='Degrees'>
-        <input type='number' id='power' placeholder='Power'>
 
         <script type="text/javascript" src="js/beer-pong.js"></script>
     </body>
