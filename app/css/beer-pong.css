@@ -1,5 +1,7 @@
-body {
-    padding: 0;
+html, body {
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: 'Permanent Marker', Arial;
 }
 
 .container {
@@ -8,9 +10,7 @@ body {
          -o-perspective: 900px;
             perspective: 900px;
     position: relative;
-    /*margin-left: 400px;*/
-    background: #36c;
-    border: 3px solid red;
+    background: #34a278;
 }
 
 .table {
@@ -83,7 +83,7 @@ body {
     -webkit-transition: all .3s ease;
     -o-transition: all .3s ease;
     -ms-transition: all .3s ease;
-    opacity; 1;
+    opacity: 1;
 }
 
 #opponent [class*="cup"] {
@@ -177,17 +177,65 @@ body {
 }
 
 .hiddenCup {
-	opacity: 0;
+    opacity: 0;
 }
 
 #status {
-    font-size: 36px;
-    font-family: Menlo;
+    font-size: 24px;
     color: #fff;
+    text-align: center;
+    font-family: 'Permanent Marker';
+    text-shadow: 0 1px 2px rgba(0,0,0,.4);
 }
 
 h1 {
     font-size: 70px;
-    font-family: Impact;
-    color: white;
+    font-family: 'Permanent Marker';
+    color: #222;
+    text-align: center;
 }
+
+#publisherVideoSection {
+    position: fixed;
+    left: 0;
+    top: 300px;
+}
+
+#subscriberVideoSection {
+    position: fixed;
+    right: 0;
+    top: 300px;
+}
+
+.OT_publisher,
+.OT_subscriber {
+    border-radius: 15px;
+}
+
+.videoSubtitle {
+    text-align: center;
+    font-family: 'Permanent Marker';
+    background: rgba(0,0,0,.3);
+    color: #fff;
+    text-shadow: 0 2px 1px rgba(0,0,0,.7);
+    padding: 4px;
+    border-radius: 5px;
+}
+
+#restartButton {
+    font-size: 18px;
+}
+
+
+.controls,
+#aiming {
+    text-align: center;
+}
+
+#stuff {
+    background: rgba(0,0,0,.1);
+    margin-top: 40px;
+    padding: 5px;
+    border-radius: 10px;
+}
+

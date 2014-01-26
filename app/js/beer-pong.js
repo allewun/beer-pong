@@ -303,10 +303,10 @@ function assignTurn() {
 
     if (myTurn) {
         $('[class*=cup]:hover').css({"cursor": "pointer"});
-        updateGameStatus("It's your turn to shoot");
+        updateGameStatus("It's your turn to shoot!");
     }
     else {
         $('[class*=cup]:hover').css({"cursor": "default"});
-        updateGameStatus("Waiting for challenger to shoot");
+        updateGameStatus("Waiting for challenger to shoot!");
     }
 }
