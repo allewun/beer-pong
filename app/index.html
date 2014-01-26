@@ -18,61 +18,57 @@
     </head>
     <body>
 
-        <div class="container">
+        <div class="container text-center header">
             <h1>BEER PONG</h1>
 
             <div class="controls">
                 <input type="button" class="btn btn-danger" id="restartButton" value="New Game" onClick="restartGame()">
-                <h3 id="status"></h3>
-                <div id="aiming">
-                    <progress id="xBar" value="0" max="100"></progress>
-                    <progress id="thetaBar" value="0" max="100"></progress>
-                    <progress id="powerBar" value="0" max="100"></progress>
-<!--
-                    <input type='number' id='xCoordinate' placeholder='X-Coordinate'>
-                    <input type='number' id='theta' placeholder='Degrees'>
-                    <input type='number' id='power' placeholder='Power'>
- -->
-                </div>
+                <h3 class="status" id="status"></h3>
+                <h3 class="status" id="shotStatus"></h3>
 
+                <label for="xBar">Position: </label><progress id="xBar" value="0" max="100"></progress>
+                <label for="thetaBar">  Angle: </label><progress id="thetaBar" value="0" max="100"></progress>
+                <label for="powerBar">  Power: </label><progress id="powerBar" value="0" max="100"></progress>
             </div>
 
+        </div>
 
+        <div class="container">
             <div class="table">
                 <div id="opponent" class="player">
-                    <div class="row">
+                    <div class="tableRow">
                         <div class="cup-9"></div>
                         <div class="cup-8"></div>
                         <div class="cup-7"></div>
                         <div class="cup-6"></div>
                     </div>
-                    <div class="row">
+                    <div class="tableRow">
                         <div class="cup-5"></div>
                         <div class="cup-4"></div>
                         <div class="cup-3"></div>
                     </div>
-                    <div class="row">
+                    <div class="tableRow">
                         <div class="cup-2"></div>
                         <div class="cup-1"></div>
                     </div>
-                    <div class="row">
+                    <div class="tableRow">
                         <div class="cup-0"></div>
                     </div>
                 </div>
                 <div id="me" class="player">
-                    <div class="row">
+                    <div class="tableRow">
                         <div class="cup-0"></div>
                     </div>
-                    <div class="row">
+                    <div class="tableRow">
                         <div class="cup-1"></div>
                         <div class="cup-2"></div>
                     </div>
-                    <div class="row">
+                    <div class="tableRow">
                         <div class="cup-3"></div>
                         <div class="cup-4"></div>
                         <div class="cup-5"></div>
                     </div>
-                    <div class="row">
+                    <div class="tableRow">
                         <div class="cup-6"></div>
                         <div class="cup-7"></div>
                         <div class="cup-8"></div>

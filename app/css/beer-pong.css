@@ -1,7 +1,8 @@
 html, body {
     padding: 0 !important;
     margin: 0 !important;
-    font-family: 'Permanent Marker', Arial;
+    /*font-family: 'Permanent Marker', Arial;*/
+    background: #34a278;
 }
 
 .container {
@@ -10,19 +11,35 @@ html, body {
          -o-perspective: 900px;
             perspective: 900px;
     position: relative;
-    background: #34a278;
+}
+
+.header {
+    width: 100%;
+    margin: 0;
+    background-color: #eee;
+}
+
+h1 {
+    font-size: 70px;
+    font-family: 'Permanent Marker';
+    color: #222;
+}
+
+.controls {
+    background: rgba(0,0,0,.1);
+    margin-bottom: 15px;
+    padding: 5px;
+    border-radius: 10px;
 }
 
 #restartButton {
     font-size: 18px;
 }
 
-.controls {
-    text-align: center;
-    background: rgba(0,0,0,.1);
-    margin-top: 40px;
-    padding: 5px;
-    border-radius: 10px;
+.status {
+    font-size: 24px;
+    /*font-family: 'Permanent Marker';*/
+    text-shadow: 0 1px 2px rgba(0,0,0,.4);
 }
 
 .table {
@@ -61,7 +78,7 @@ html, body {
     bottom: 60px;
 }
 
-.row {
+.tableRow {
     display: block;
     width: 300px;
     height: 64px;
@@ -192,20 +209,6 @@ html, body {
     visibility: hidden;
 }
 
-#status {
-    font-size: 24px;
-    color: #fff;
-    text-align: center;
-    font-family: 'Permanent Marker';
-    text-shadow: 0 1px 2px rgba(0,0,0,.4);
-}
-
-h1 {
-    font-size: 70px;
-    font-family: 'Permanent Marker';
-    color: #222;
-    text-align: center;
-}
 
 #publisherVideoSection {
     position: fixed;
@@ -225,12 +228,12 @@ h1 {
 }
 
 .videoSubtitle {
-    text-align: center;
-    font-family: 'Permanent Marker';
+    /*font-family: 'Permanent Marker';*/
     background: rgba(0,0,0,.3);
     color: #fff;
     text-shadow: 0 2px 1px rgba(0,0,0,.7);
     padding: 4px;
+    margin: 4px;
     border-radius: 5px;
 }
 

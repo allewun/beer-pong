@@ -19,6 +19,7 @@ BP_CUPS_LOSE = "0000000000";
 var firebase = new Firebase(firebaseURL);
 var currentPlayer = null;
 var myTurn = false;
+
 var xBar = $("progress#xBar");
 var thetaBar = $("progress#thetaBar");
 var powerBar = $("progress#powerBar");
@@ -37,7 +38,7 @@ firebase.auth(authToken, function(error) {
 });
 
 
-// update data
+// UPDATE DATA
 firebase.on("value", function(snapshot) {
     // local copy of data
     data = snapshot.val();
@@ -54,8 +55,7 @@ firebase.on("value", function(snapshot) {
             firebase.child("p1/online").set(true);
             updatePlayerName("Player 1");
             updateGameStatus("Waiting for challenger...");
-        }
-        else if (!data.p2.online) {
+        } else if (!data.p2.online) {
             currentPlayer = "p2";
             firebase.child("p2/online").set(true);
             updatePlayerName("Player 2");
@@ -135,7 +135,7 @@ function resetAimingBars() {
 }
 
 function shootBall() {
-    console.log("           x: " + xBar.val() + " | theta: " + thetaBar.val() + " | power: " + powerBar.val());
+    console.log("x: " + xBar.val() + " | theta: " + thetaBar.val() + " | power: " + powerBar.val());
     var xVal = Math.floor((xBar.val() * 0.06) * 100) / 100;
     var thetaVal = Math.floor((thetaBar.val() * 0.3 + 30) * 100) / 100;
     var powerVal = Math.floor((powerBar.val() * 0.004 + 3.9)* 100) / 100;
@@ -152,6 +152,8 @@ function shootBall() {
         shot("p1", cup);
     }
 }
+
+updateShotStatus
 
 function shot(player, cup) {
     if (!myTurn) {
@@ -218,13 +220,33 @@ $('[class*=cup]').click(function (e) {
 });
 
 function restartGame() {
-    firebase.update({
-        p1: {cups: BP_CUPS_NEW},
-        p2: {cups: BP_CUPS_NEW},
-        ball: 1,
-        turn: "p1"
-    }, onComplete);
-    resetTable();
+    if (currentPlayer === "p1") {
+        firebase.update({
+            p1: {cups: BP_CUPS_NEW, online: true},
+            p2: {cups: BP_CUPS_NEW},
+            ball: 1,
+            turn: "p1"
+        }, onComplete);
+        resetTable();
+    } else if (currentPlayer === "p2") {
+        firebase.update({
+            p1: {cups: BP_CUPS_NEW},
+            p2: {cups: BP_CUPS_NEW, online: true},
+            ball: 1,
+            turn: "p1"
+        }, onComplete);
+        resetTable();
+    } else {
+        if (confirm("Are you sure you want to restart the game?")) {
+            firebase.update({
+                p1: {cups: BP_CUPS_NEW},
+                p2: {cups: BP_CUPS_NEW},
+                ball: 1,
+                turn: "p1"
+            }, onComplete);
+            resetTable();
+        }
+    }
 }
 
 function resetTable() {
@@ -333,8 +355,8 @@ function wentInWhichCup(x, theta, v) {
     return -1;
 }
 
-function updateGameStatus(status) {
-    $("#status").html(status);
+function updateGameStatus(msg) {
+    $("#status").html(msg);
 }
 
 function updatePlayerName(name) {
