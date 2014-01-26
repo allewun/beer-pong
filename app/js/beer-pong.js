@@ -73,6 +73,7 @@ firebase.on("value", function(snapshot) {
 
     // assign turns
     assignTurn();
+    checkAvailableReracks();
 
     //alert("You are " + currentPlayer);
 
@@ -363,6 +364,31 @@ function assignTurn() {
     else {
         $('[class*=cup]:hover').css({"cursor": "default"});
         updateGameStatus("Waiting for challenger to shoot!");
+    }
+}
+
+function checkAvailableReracks() {
+    var reracksCount = 0;
+    if (currentPlayer == "p1")
+        reracksCount = data.p1.reracks;
+    else if (currentPlayer == "p2")
+        reracksCount = data.p2.reracks;
+
+    var rerackButton = $("#rerackButton");
+
+    if (reracksCount < 1)
+        rerackButton.hide();
+
+    var cup_count = 0;
+    $("#opponent .tableRow div").each(function(i) {
+        if(!($(this).hasClass("hiddenCup")))
+            cup_count++;
+    });
+
+    if (cup_count == 2 || cup_count == 3 || cup_count == 4 || cup_count == 6) {
+        rerackButton.show();
+    } else {
+        rerackButton.hide();
     }
 }
 
