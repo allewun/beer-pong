@@ -19,9 +19,13 @@ BP_CUPS_LOSE = "0000000000";
 var firebase = new Firebase(firebaseURL);
 var currentPlayer = null;
 var myTurn = false;
+var xBar = $("progress#xBar");
+var thetaBar = $("progress#thetaBar");
+var powerBar = $("progress#powerBar");
 
 // local copy of server data
 var data = {};
+
 
 // Auth tokens should be generated on the fly and randomized links created for each game
 firebase.auth(authToken, function(error) {
@@ -41,7 +45,6 @@ firebase.on("value", function(snapshot) {
     // check status
     checkWin(data.p1.cups, data.p2.cups);
 
-    //
     updateCups();
 
     // assign "p1" and "p2"
@@ -125,8 +128,46 @@ var onComplete = function(error) {
   //else alert('Synchronization succeeded.');
 };
 
+function resetAimingBars() {
+    xBar.val(0);
+    thetaBar.val(0);
+    powerBar.val(0);
+}
+
+function shootBall() {
+    console.log("           x: " + xBar.val() + " | theta: " + thetaBar.val() + " | power: " + powerBar.val());
+    var xVal = Math.floor((xBar.val() * 0.06) * 100) / 100;
+    var thetaVal = Math.floor((thetaBar.val() * 0.3 + 30) * 100) / 100;
+    var powerVal = Math.floor((powerBar.val() * 0.004 + 3.9)* 100) / 100;
+    console.log("Calculated x: " + xVal + " | theta: " + thetaVal + " | power: " + powerVal);
+
+    var cup = wentInWhichCup(xVal, thetaVal, powerVal);
+
+    console.log(cup);
+
+    if (currentPlayer == "p1") {
+        shot("p2", cup);
+    }
+    else if (currentPlayer == "p2") {
+        shot("p1", cup);
+    }
+}
+
 function shot(player, cup) {
-    if (!myTurn || cup == -1) {
+    if (!myTurn) {
+        return;
+    }
+    if (cup == -1) {
+        if (data.ball == 1) {
+            data.ball = 2;
+            firebase.update({ ball: data.ball }, onComplete);
+        }
+        else {
+            firebase.update({
+                turn: ((data.turn == "p1") ? "p2" : "p1"),
+                ball: 1
+            }, onComplete);
+        }
         return;
     }
 
@@ -212,18 +253,18 @@ function checkWin(p1cups, p2cups) {
 
 $('#power').keypress(function (e) {
     if (e.keyCode == 13) {
-        var xCoordinate = $('#xCoordinate').val();
-        var theta = $('#theta').val();
-        var power = $('#power').val();
-        //firebase.child("toss").set({xCoordinate:xCoordinate, theta:theta, power:power});
+        var xVal = $('#xBar').val();
+        var thetaVal = $('#thetaBar').val();
+        var powerVal = $('#powerBar').val();
+        //firebase.child("toss").set({xBar:xBar, theta:theta, power:power});
 
-        $('#xCoordinate').val('');
-        $('#theta').val('');
-        $('#power').val('');
+        $('#xBar').val(0);
+        $('#thetaBar').val('');
+        $('#powerBar').val('');
 
 
         var team = $(this).parent().parent().attr("id");
-        var cup = wentInWhichCup(xCoordinate, theta, power);
+        var cup = wentInWhichCup(xBar, theta, power);
 
         console.log(cup);
 
@@ -237,24 +278,26 @@ $('#power').keypress(function (e) {
 });
 
 function projectileDistance(theta, v) {
+    theta = theta * (Math.PI/180);
     return (v*Math.cos(theta)/10)*(v*Math.sin(theta)+Math.sqrt(Math.pow((v*Math.sin(theta)),2) + 2*10*.863));
 }
 
 function wentInWhichCup(x, theta, v) {
     var d = projectileDistance(theta, v);
+    console.log("Projectile Distance: " + d);
     if (d > 2.438) {
         return -1;
     } else if (d > 2.346) {
         if (x < 1) {
             return -1;
         } else if (x < 2) {
-            return 6;
-        } else if (x < 3) {
-            return 7;
-        } else if (x < 4) {
-            return 8;
-        } else if (x < 5) {
             return 9;
+        } else if (x < 3) {
+            return 8;
+        } else if (x < 4) {
+            return 7;
+        } else if (x < 5) {
+            return 6;
         } else {
             return -1;
         }
@@ -262,11 +305,11 @@ function wentInWhichCup(x, theta, v) {
         if (x < 1.5) {
             return -1;
         } else if (x < 2.5) {
-            return 3;
+            return 5;
         } else if (x < 3.5) {
             return 4;
         } else if (x < 4.5) {
-            return 5;
+            return 3;
         } else {
             return -1;
         }
@@ -274,9 +317,9 @@ function wentInWhichCup(x, theta, v) {
         if (x < 2) {
             return -1;
         } else if (x < 3) {
-            return 1;
-        } else if (x < 4) {
             return 2;
+        } else if (x < 4) {
+            return 1;
         } else {
             return -1;
         }
@@ -310,3 +353,52 @@ function assignTurn() {
         updateGameStatus("Waiting for challenger to shoot!");
     }
 }
+
+$(document).ready(function() {
+    resetAimingBars();
+
+    var currentBar = xBar;
+    var currentBarUp = true;
+    var currentBarRunning = false;
+
+    var currentBarInterval;
+    var inputKey = 13;
+
+    var barSpeed = 10;
+
+    window.onkeydown = function(e) {
+        if (e.which === inputKey && myTurn === true && currentBarRunning === false) {
+            currentBarRunning = true;
+            currentBar.val(0);
+            clearInterval(currentBarInterval);
+            currentBarInterval = setInterval(function() {
+                if (currentBar.val() >= 100)
+                    currentBarUp = false;
+                else if (currentBar.val() <= 0)
+                    currentBarUp = true;
+
+                if (currentBarUp === true)
+                    currentBar.val(currentBar.val()+1);
+                else
+                    currentBar.val(currentBar.val()-1);
+            }, barSpeed); // Speed of the bar
+        }
+    };
+    window.onkeyup = function(e) {
+        if (e.which === inputKey && myTurn === true && currentBarRunning === true) {
+            currentBarRunning = false;
+            clearInterval(currentBarInterval);
+            if (currentBar == xBar) {
+                currentBar = thetaBar;
+            } else if (currentBar == thetaBar) {
+                currentBar = powerBar;
+            } else {
+                currentBar = xBar;
+                $(document).unbind("keydown");
+                $(document).unbind("keyup");
+                shootBall();
+            }
+        }
+    };
+
+});

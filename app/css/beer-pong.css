@@ -13,6 +13,18 @@ html, body {
     background: #34a278;
 }
 
+#restartButton {
+    font-size: 18px;
+}
+
+.controls {
+    text-align: center;
+    background: rgba(0,0,0,.1);
+    margin-top: 40px;
+    padding: 5px;
+    border-radius: 10px;
+}
+
 .table {
     width: 350px;
     height: 1000px;
@@ -177,7 +189,7 @@ html, body {
 }
 
 .hiddenCup {
-    opacity: 0;
+    visibility: hidden;
 }
 
 #status {
@@ -220,22 +232,5 @@ h1 {
     text-shadow: 0 2px 1px rgba(0,0,0,.7);
     padding: 4px;
     border-radius: 5px;
-}
-
-#restartButton {
-    font-size: 18px;
-}
-
-
-.controls,
-#aiming {
-    text-align: center;
-}
-
-#stuff {
-    background: rgba(0,0,0,.1);
-    margin-top: 40px;
-    padding: 5px;
-    border-radius: 10px;
 }
 
