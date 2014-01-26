@@ -1,4 +1,4 @@
-var dev = true;
+var dev = false;
 
 var firebaseURL;
 var authToken;
@@ -10,21 +10,18 @@ if (dev) {
     authToken = "iKCCsctxphzcK4mkO99UHfz3RWOWqeNhCUlU55BH";
 }
 
+// Constants
+BP_CUPS_NEW  = "1111111111";
+BP_CUPS_LOSE = "0000000000";
+
+
 // Get a reference to the root of the chat data.
 var firebase = new Firebase(firebaseURL);
 var currentPlayer = null;
+var myTurn = false;
 
-var data = {
-    p1: {
-        cups: null,
-        online: null
-    },
-
-    p2: {
-        cups: null,
-        online: null
-    }
-};
+// local copy of server data
+var data = {};
 
 // Auth tokens should be generated on the fly and randomized links created for each game
 firebase.auth(authToken, function(error) {
@@ -38,59 +35,21 @@ firebase.auth(authToken, function(error) {
 
 // update data
 firebase.on("value", function(snapshot) {
-    data.p1.online = snapshot.val().p1.online;
-    data.p2.online = snapshot.val().p2.online;
+    // local copy of data
+    data = snapshot.val();
 
-    data.p1.cups = snapshot.val().p1.cups;
-    data.p2.cups = snapshot.val().p2.cups;
-
+    // check status
     checkWin(data.p1.cups, data.p2.cups);
 
-    var p1temp = data.p1.cups.toString().split("");
-    var p2temp = data.p2.cups.toString().split("");
+    //
+    updateCups();
 
-    for (var i = 0; i < p1temp.length; i++) {
-        if (p1temp[i] == "0") {
-            if (currentPlayer == "p1") {
-                $('#me .cup-' + i).addClass("hiddenCup");
-            }
-            else if (currentPlayer == "p2") {
-                $('#opponent .cup-' + i).addClass("hiddenCup");
-            }
-        }
-        else if (p1temp[i] == "1") {
-            if (currentPlayer == "p1") {
-                $('#me .cup-' + i).removeClass("hiddenCup");
-            }
-            else if (currentPlayer == "p2") {
-                $('#opponent .cup-' + i).removeClass("hiddenCup");
-            }
-        }
-    }
-
-    for (var i = 0; i < p2temp.length; i++) {
-        if (p2temp[i] == "0") {
-            if (currentPlayer == "p1") {
-                $('#opponent .cup-' + i).addClass("hiddenCup");
-            }
-            else if (currentPlayer == "p2") {
-                $('#me .cup-' + i).addClass("hiddenCup");
-            }
-        }
-        else if (p2temp[i] == "1") {
-            if (currentPlayer == "p1") {
-                $('#opponent .cup-' + i).removeClass("hiddenCup");
-            }
-            else if (currentPlayer == "p2") {
-                $('#me .cup-' + i).removeClass("hiddenCup");
-            }
-        }
-    }
-
+    // assign "p1" and "p2"
     if (!currentPlayer) {
         if (!data.p1.online) {
             currentPlayer = "p1";
             firebase.child("p1/online").set(true);
+            updateGameStatus("Waiting for challenger...");
         }
         else if (!data.p2.online) {
             currentPlayer = "p2";
@@ -98,22 +57,93 @@ firebase.on("value", function(snapshot) {
         }
     }
 
+    // Start game
+    if (data.p1.cups == BP_CUPS_NEW && data.p2.cups == BP_CUPS_NEW
+        && data.p1.online && data.p2.online) {
+        updateGameStatus("Start!");
+    }
+
+    // assign turns
+    assignTurn();
+
     //alert("You are " + currentPlayer);
 
     // disconnect
     firebase.child(currentPlayer + "/online").onDisconnect().set(false);
 });
 
+function updateCups() {
+    var p1temp = data.p1.cups.toString().split("");
+    var p2temp = data.p2.cups.toString().split("");
+
+    for (var i = 0; i < p1temp.length; i++) {
+        if (p1temp[i] == "0") {
+            if (currentPlayer == "p1") {
+                $('#me .cup-' + i).addClass("hide");
+            }
+            else if (currentPlayer == "p2") {
+                $('#opponent .cup-' + i).addClass("hide");
+            }
+        }
+        else if (p1temp[i] == "1") {
+            if (currentPlayer == "p1") {
+                $('#me .cup-' + i).removeClass("hide");
+            }
+            else if (currentPlayer == "p2") {
+                $('#opponent .cup-' + i).removeClass("hide");
+            }
+        }
+    }
+
+    for (var i = 0; i < p2temp.length; i++) {
+        if (p2temp[i] == "0") {
+            if (currentPlayer == "p1") {
+                $('#opponent .cup-' + i).addClass("hide");
+            }
+            else if (currentPlayer == "p2") {
+                $('#me .cup-' + i).addClass("hide");
+            }
+        }
+        else if (p2temp[i] == "1") {
+            if (currentPlayer == "p1") {
+                $('#opponent .cup-' + i).removeClass("hide");
+            }
+            else if (currentPlayer == "p2") {
+                $('#me .cup-' + i).removeClass("hide");
+            }
+        }
+    }
+}
+
+var onComplete = function(error) {
+  if (error) alert('Synchronization failed.');
+  //else alert('Synchronization succeeded.');
+};
+
 function shot(player, cup) {
-    if (cup == -1) {
+    if (!myTurn || cup == -1) {
         return;
     }
+
     var score = data[player].cups;
     console.log(score);
     var temp = score.toString().split("");
     temp[cup] = "0";
     score = temp.join("");
     firebase.child(player + "/cups").set(score);
+
+    console.log("before = " + data.ball);
+    // 1st/2nd shot
+    if (data.ball == 1) {
+        data.ball = 2;
+        firebase.update({ ball: data.ball }, onComplete);
+    }
+    else {
+        firebase.update({
+            turn: ((data.turn == "p1") ? "p2" : "p1"),
+            ball: 1
+        }, onComplete);
+    }
 }
 
 // When the user presses enter on the message input, write the message to firebase.
@@ -142,29 +172,31 @@ $('[class*=cup]').click(function (e) {
 });
 
 function restartGame() {
-    firebase.child("p1/cups").set("1111111111");
-    firebase.child("p2/cups").set("1111111111");
+    firebase.update({
+        p1: {cups: BP_CUPS_NEW},
+        p2: {cups: BP_CUPS_NEW},
+        ball: 1,
+        turn: "p1"
+    }, onComplete);
     resetTable();
 }
+
 function resetTable() {
-    $("[class*=cup] ").removeClass("hiddenCup");
+    $("[class*=cup] ").removeClass("hide");
 }
+
 function checkWin(p1cups, p2cups) {
-    if (p2cups === "0000000000") {
+    if (p1cups === BP_CUPS_LOSE && p2cups !== BP_CUPS_LOSE) {
         if (currentPlayer === "p1") {
-            alert("Yes, much sucess, very joy");
-        } else if (currentPlayer === "p2") {
             alert("Much sad, very lose");
         } else {
-            alert("Player 1 won the game");
+            alert("Yes, much success, very joy");
         }
-    } else if (p1cups === "0000000000") {
-        if (currentPlayer === "p1") {
+    } else if (p2cups === BP_CUPS_LOSE && p1cups !== BP_CUPS_LOSE) {
+        if (currentPlayer === "p2") {
             alert("Much sad, very lose");
-        } else if (currentPlayer === "p2") {
-            alert("Yes, much sucess, very joy");
         } else {
-            alert("Player 2 won the game");
+            alert("Yes, much success, very joy");
         }
     }
 }
@@ -247,4 +279,22 @@ function wentInWhichCup(x, theta, v) {
         }
     }
     return -1;
+}
+
+function updateGameStatus(status) {
+    $("#status").html(status);
+}
+
+
+function assignTurn() {
+    myTurn = (data.turn === currentPlayer);
+
+    if (myTurn) {
+        $('[class*=cup]:hover').css({"cursor": "pointer"});
+        updateGameStatus("It's your turn to shoot");
+    }
+    else {
+        $('[class*=cup]:hover').css({"cursor": "default"});
+        updateGameStatus("Waiting for challenger to shoot");
+    }
 }
