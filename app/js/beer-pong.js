@@ -1,11 +1,12 @@
 // Constants
-BEERPONG_CUPS_NEW  = "1111111111";
-BEERPONG_CUPS_LOSE = "0000000000";
+BP_CUPS_NEW  = "1111111111";
+BP_CUPS_LOSE = "0000000000";
 
 
 // Get a reference to the root of the chat data.
 var firebase = new Firebase('https://beer-pong.firebaseio.com/');
 var currentPlayer = null;
+var myTurn = false;
 
 // local copy of server data
 var data = {};
@@ -31,7 +32,7 @@ firebase.on("value", function(snapshot) {
     //
     updateCups();
 
-    // assign P1 and P2
+    // assign "p1" and "p2"
     if (!currentPlayer) {
         if (!data.p1.online) {
             currentPlayer = "p1";
@@ -45,10 +46,13 @@ firebase.on("value", function(snapshot) {
     }
 
     // Start game
-    if (data.p1.cups == BEERPONG_CUPS_NEW && data.p2.cups == BEERPONG_CUPS_NEW
+    if (data.p1.cups == BP_CUPS_NEW && data.p2.cups == BP_CUPS_NEW
         && data.p1.online && data.p2.online) {
         updateGameStatus("Start!");
     }
+
+    // assign turns
+    assignTurn();
 
     //alert("You are " + currentPlayer);
 
@@ -99,16 +103,35 @@ function updateCups() {
     }
 }
 
+var onComplete = function(error) {
+  if (error) alert('Synchronization failed.');
+  //else alert('Synchronization succeeded.');
+};
+
 function shot(player, cup) {
-    if (cup == -1) {
+    if (!myTurn || cup == -1) {
         return;
     }
+
     var score = data[player].cups;
     console.log(score);
     var temp = score.toString().split("");
     temp[cup] = "0";
     score = temp.join("");
     firebase.child(player + "/cups").set(score);
+
+    console.log("before = " + data.ball);
+    // 1st/2nd shot
+    if (data.ball == 1) {
+        data.ball = 2;
+        firebase.update({ ball: data.ball }, onComplete);
+    }
+    else {
+        firebase.update({
+            turn: ((data.turn == "p1") ? "p2" : "p1"),
+            ball: 1
+        }, onComplete);
+    }
 }
 
 // When the user presses enter on the message input, write the message to firebase.
@@ -137,8 +160,12 @@ $('[class*=cup]').click(function (e) {
 });
 
 function restartGame() {
-    firebase.child("p1/cups").set(BEERPONG_CUPS_NEW);
-    firebase.child("p2/cups").set(BEERPONG_CUPS_NEW);
+    firebase.update({
+        p1: {cups: BP_CUPS_NEW},
+        p2: {cups: BP_CUPS_NEW},
+        ball: 1,
+        turn: "p1"
+    }, onComplete);
     resetTable();
 }
 
@@ -147,13 +174,13 @@ function resetTable() {
 }
 
 function checkWin(p1cups, p2cups) {
-    if (p1cups === BEERPONG_CUPS_LOSE && p2cups !== BEERPONG_CUPS_LOSE) {
+    if (p1cups === BP_CUPS_LOSE && p2cups !== BP_CUPS_LOSE) {
         if (currentPlayer === "p1") {
             alert("Much sad, very lose");
         } else {
             alert("Yes, much success, very joy");
         }
-    } else if (p2cups === BEERPONG_CUPS_LOSE && p1cups !== BEERPONG_CUPS_LOSE) {
+    } else if (p2cups === BP_CUPS_LOSE && p1cups !== BP_CUPS_LOSE) {
         if (currentPlayer === "p2") {
             alert("Much sad, very lose");
         } else {
@@ -244,4 +271,18 @@ function wentInWhichCup(x, theta, v) {
 
 function updateGameStatus(status) {
     $("#status").html(status);
+}
+
+
+function assignTurn() {
+    myTurn = (data.turn === currentPlayer);
+
+    if (myTurn) {
+        $('[class*=cup]:hover').css({"cursor": "pointer"});
+        updateGameStatus("It's your turn to shoot");
+    }
+    else {
+        $('[class*=cup]:hover').css({"cursor": "default"});
+        updateGameStatus("Waiting for challenger to shoot");
+    }
 }
