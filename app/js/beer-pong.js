@@ -79,18 +79,18 @@ function updateCups() {
     for (var i = 0; i < p1temp.length; i++) {
         if (p1temp[i] == "0") {
             if (currentPlayer == "p1") {
-                $('#me .cup-' + i).addClass("hide");
+                $('#me .cup-' + i).addClass("hiddenCup");
             }
             else if (currentPlayer == "p2") {
-                $('#opponent .cup-' + i).addClass("hide");
+                $('#opponent .cup-' + i).addClass("hiddenCup");
             }
         }
         else if (p1temp[i] == "1") {
             if (currentPlayer == "p1") {
-                $('#me .cup-' + i).removeClass("hide");
+                $('#me .cup-' + i).removeClass("hiddenCup");
             }
             else if (currentPlayer == "p2") {
-                $('#opponent .cup-' + i).removeClass("hide");
+                $('#opponent .cup-' + i).removeClass("hiddenCup");
             }
         }
     }
@@ -98,18 +98,18 @@ function updateCups() {
     for (var i = 0; i < p2temp.length; i++) {
         if (p2temp[i] == "0") {
             if (currentPlayer == "p1") {
-                $('#opponent .cup-' + i).addClass("hide");
+                $('#opponent .cup-' + i).addClass("hiddenCup");
             }
             else if (currentPlayer == "p2") {
-                $('#me .cup-' + i).addClass("hide");
+                $('#me .cup-' + i).addClass("hiddenCup");
             }
         }
         else if (p2temp[i] == "1") {
             if (currentPlayer == "p1") {
-                $('#opponent .cup-' + i).removeClass("hide");
+                $('#opponent .cup-' + i).removeClass("hiddenCup");
             }
             else if (currentPlayer == "p2") {
-                $('#me .cup-' + i).removeClass("hide");
+                $('#me .cup-' + i).removeClass("hiddenCup");
             }
         }
     }
@@ -182,7 +182,7 @@ function restartGame() {
 }
 
 function resetTable() {
-    $("[class*=cup] ").removeClass("hide");
+    $("[class*=cup] ").removeClass("hiddenCup");
 }
 
 function checkWin(p1cups, p2cups) {
