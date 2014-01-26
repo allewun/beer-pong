@@ -1,4 +1,4 @@
-var dev = false;
+var dev = true;
 
 var firebaseURL;
 var authToken;
@@ -49,11 +49,16 @@ firebase.on("value", function(snapshot) {
         if (!data.p1.online) {
             currentPlayer = "p1";
             firebase.child("p1/online").set(true);
+            updatePlayerName("Player 1");
             updateGameStatus("Waiting for challenger...");
         }
         else if (!data.p2.online) {
             currentPlayer = "p2";
             firebase.child("p2/online").set(true);
+            updatePlayerName("Player 2");
+        } else {
+            updatePlayerName("Spectating");
+            currentPlayer = "spec";
         }
     }
 
@@ -78,7 +83,7 @@ function updateCups() {
 
     for (var i = 0; i < p1temp.length; i++) {
         if (p1temp[i] == "0") {
-            if (currentPlayer == "p1") {
+            if (currentPlayer == "p1" || currentPlayer == "spec") {
                 $('#me .cup-' + i).addClass("hiddenCup");
             }
             else if (currentPlayer == "p2") {
@@ -86,7 +91,7 @@ function updateCups() {
             }
         }
         else if (p1temp[i] == "1") {
-            if (currentPlayer == "p1") {
+            if (currentPlayer == "p1" || currentPlayer == "spec") {
                 $('#me .cup-' + i).removeClass("hiddenCup");
             }
             else if (currentPlayer == "p2") {
@@ -97,7 +102,7 @@ function updateCups() {
 
     for (var i = 0; i < p2temp.length; i++) {
         if (p2temp[i] == "0") {
-            if (currentPlayer == "p1") {
+            if (currentPlayer == "p1" || currentPlayer == "spec") {
                 $('#opponent .cup-' + i).addClass("hiddenCup");
             }
             else if (currentPlayer == "p2") {
@@ -105,7 +110,7 @@ function updateCups() {
             }
         }
         else if (p2temp[i] == "1") {
-            if (currentPlayer == "p1") {
+            if (currentPlayer == "p1" || currentPlayer == "spec") {
                 $('#opponent .cup-' + i).removeClass("hiddenCup");
             }
             else if (currentPlayer == "p2") {
@@ -189,14 +194,18 @@ function checkWin(p1cups, p2cups) {
     if (p1cups === BP_CUPS_LOSE && p2cups !== BP_CUPS_LOSE) {
         if (currentPlayer === "p1") {
             alert("Much sad, very lose");
-        } else {
+        } else if (currentPlayer === "p2") {
             alert("Yes, much success, very joy");
+        } else {
+            alert("Player 2 has won the game");
         }
     } else if (p2cups === BP_CUPS_LOSE && p1cups !== BP_CUPS_LOSE) {
         if (currentPlayer === "p2") {
             alert("Much sad, very lose");
-        } else {
+        } else if (currentPlayer === "p1") {
             alert("Yes, much success, very joy");
+        } else {
+            alert("Player 1 has won the game");
         }
     }
 }
@@ -285,6 +294,9 @@ function updateGameStatus(status) {
     $("#status").html(status);
 }
 
+function updatePlayerName(name) {
+    $("#playerName").html("You are " + name);
+}
 
 function assignTurn() {
     myTurn = (data.turn === currentPlayer);
