@@ -1,8 +1,13 @@
+// Constants
+BEERPONG_CUPS_NEW  = "1111111111";
+BEERPONG_CUPS_LOSE = "0000000000";
+
 
 // Get a reference to the root of the chat data.
 var firebase = new Firebase('https://beer-pong.firebaseio.com/');
 var currentPlayer = null;
 
+// local copy of server data
 var data = {};
 
 // Auth tokens should be generated on the fly and randomized links created for each game
@@ -19,11 +24,39 @@ firebase.auth("iKCCsctxphzcK4mkO99UHfz3RWOWqeNhCUlU55BH", function(error) {
 firebase.on("value", function(snapshot) {
     // local copy of data
     data = snapshot.val();
-    console.log(data);
 
     // check status
     checkWin(data.p1.cups, data.p2.cups);
 
+    //
+    updateCups();
+
+    // assign P1 and P2
+    if (!currentPlayer) {
+        if (!data.p1.online) {
+            currentPlayer = "p1";
+            firebase.child("p1/online").set(true);
+            updateGameStatus("Waiting for challenger...");
+        }
+        else if (!data.p2.online) {
+            currentPlayer = "p2";
+            firebase.child("p2/online").set(true);
+        }
+    }
+
+    // Start game
+    if (data.p1.cups == BEERPONG_CUPS_NEW && data.p2.cups == BEERPONG_CUPS_NEW
+        && data.p1.online && data.p2.online) {
+        updateGameStatus("Start!");
+    }
+
+    //alert("You are " + currentPlayer);
+
+    // disconnect
+    firebase.child(currentPlayer + "/online").onDisconnect().set(false);
+});
+
+function updateCups() {
     var p1temp = data.p1.cups.toString().split("");
     var p2temp = data.p2.cups.toString().split("");
 
@@ -64,23 +97,7 @@ firebase.on("value", function(snapshot) {
             }
         }
     }
-
-    if (!currentPlayer) {
-        if (!data.p1.online) {
-            currentPlayer = "p1";
-            firebase.child("p1/online").set(true);
-        }
-        else if (!data.p2.online) {
-            currentPlayer = "p2";
-            firebase.child("p2/online").set(true);
-        }
-    }
-
-    //alert("You are " + currentPlayer);
-
-    // disconnect
-    firebase.child(currentPlayer + "/online").onDisconnect().set(false);
-});
+}
 
 function shot(player, cup) {
     if (cup == -1) {
@@ -120,21 +137,23 @@ $('[class*=cup]').click(function (e) {
 });
 
 function restartGame() {
-    firebase.child("p1/cups").set("1111111111");
-    firebase.child("p2/cups").set("1111111111");
+    firebase.child("p1/cups").set(BEERPONG_CUPS_NEW);
+    firebase.child("p2/cups").set(BEERPONG_CUPS_NEW);
     resetTable();
 }
+
 function resetTable() {
     $("[class*=cup] ").removeClass("hide");
 }
+
 function checkWin(p1cups, p2cups) {
-    if (p1cups === "0000000000" && p2cups !== "0000000000") {
+    if (p1cups === BEERPONG_CUPS_LOSE && p2cups !== BEERPONG_CUPS_LOSE) {
         if (currentPlayer === "p1") {
             alert("Much sad, very lose");
         } else {
             alert("Yes, much success, very joy");
         }
-    } else if (p2cups === "0000000000") {
+    } else if (p2cups === BEERPONG_CUPS_LOSE && p1cups !== BEERPONG_CUPS_LOSE) {
         if (currentPlayer === "p2") {
             alert("Much sad, very lose");
         } else {
@@ -221,4 +240,8 @@ function wentInWhichCup(x, theta, v) {
         }
     }
     return -1;
+}
+
+function updateGameStatus(status) {
+    $("#status").html(status);
 }

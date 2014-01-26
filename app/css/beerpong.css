@@ -109,3 +109,9 @@ body {
 .hide {
 	visibility: hidden;
 }
+
+#status {
+    font-size: 36px;
+    font-family: Menlo;
+    color: #fff;
+}
