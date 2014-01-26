@@ -13,6 +13,7 @@ if (dev) {
 // Constants
 BP_CUPS_NEW  = "1111111111";
 BP_CUPS_LOSE = "0000000000";
+BP_RERACKS = 2;
 
 
 // Get a reference to the root of the chat data.
@@ -45,7 +46,6 @@ firebase.on("value", function(snapshot) {
 
     // check status
     checkWin(data.p1.cups, data.p2.cups);
-
     updateCups();
 
     // assign "p1" and "p2"
@@ -218,32 +218,24 @@ $('[class*=cup]').click(function (e) {
 });
 
 function restartGame() {
-    if (currentPlayer === "p1") {
-        firebase.update({
-            p1: {cups: BP_CUPS_NEW, online: true},
-            p2: {cups: BP_CUPS_NEW},
-            ball: 1,
-            turn: "p1"
-        }, onComplete);
-        resetTable();
-    } else if (currentPlayer === "p2") {
-        firebase.update({
-            p1: {cups: BP_CUPS_NEW},
-            p2: {cups: BP_CUPS_NEW, online: true},
-            ball: 1,
-            turn: "p1"
-        }, onComplete);
-        resetTable();
-    } else {
+    if (currentPlayer === "spec") {
         if (confirm("Are you sure you want to restart the game?")) {
             firebase.update({
-                p1: {cups: BP_CUPS_NEW},
-                p2: {cups: BP_CUPS_NEW},
+                p1: {cups: BP_CUPS_NEW, reracks: BP_RERACKS},
+                p2: {cups: BP_CUPS_NEW, reracks: BP_RERACKS},
                 ball: 1,
                 turn: "p1"
             }, onComplete);
             resetTable();
         }
+    } else {
+        firebase.update({
+            p1: {cups: BP_CUPS_NEW, reracks: BP_RERACKS},
+            p2: {cups: BP_CUPS_NEW, reracks: BP_RERACKS},
+            ball: 1,
+            turn: "p1"
+        }, onComplete);
+        resetTable();
     }
 }
 
@@ -374,16 +366,57 @@ function assignTurn() {
     }
 }
 
+function rerack() {
+    if (currentPlayer != "p1" && currentPlayer != "p2") {
+        alert("Spectators cannont rerack");
+        return;
+    }
+
+    var reracksCount = 0;
+    if (currentPlayer == "p1") {
+        reracksCount = data.p1.reracks;
+    } else if (currentPlayer == "p2") {
+        reracksCount = data.p2.reracks;
+    }
+
+    if (reracksCount < 1) {
+        alert("No more reracks available");
+        return;
+    }
+
+    var cup_count = 0;
+    $("#opponent .tableRow div").each(function(i) {
+        if(!($(this).hasClass("hiddenCup")))
+            cup_count++;
+    });
+
+    if (cup_count != 2 && cup_count != 3 && cup_count != 4 && cup_count != 6) {
+        alert("Valid number of cups to rerack is 2, 3, 4, and 6");
+        return;
+    }
+
+    var opponent = (currentPlayer == "p1") ? "p2" : "p1";
+    var rack;
+    if (cup_count == 2)
+        rack = "1000100000";
+    else if (cup_count == 3)
+        rack = "1110000000";
+    else if (cup_count == 4)
+        rack = "1110100000";
+    else if (cup_count == 6)
+        rack = "1111110000";
+
+    firebase.child(opponent + "/cups").set(rack);
+    firebase.child(currentPlayer + "/reracks").set(reracksCount - 1);
+}
+
 $(document).ready(function() {
     resetAimingBars();
-
     var currentBar = xBar;
     var currentBarUp = true;
     var currentBarRunning = false;
-
     var currentBarInterval;
     var inputKey = 13;
-
     var barSpeed = 10;
 
     window.onkeydown = function(e) {
