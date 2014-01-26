@@ -60,24 +60,24 @@ body {
     display: inline-block;
     width: 64px;
     height: 64px;
-    border: 2px solid red;
+    border: 2px solid #fff;
     border-radius: 64px;
-    box-shadow: 0 0 3px rgba(0,0,0,.2),
-                0 2px 1px #c51932,
+    box-shadow: 0 1px 2px #74091d,
                 0 4px 1px #c51932,
-                0 6px 1px #c51932,
-                1px 8px 1px #c51932,
-                1px 10px 1px #c51932,
-                1px 12px 1px #c51932,
-                1px 14px 1px #c51932,
+                0 7px 1px #c51932,
+                0 10px 1px #c51932,
+                1px 13px 1px #c51932,
                 1px 16px 1px #c51932,
-                1px 18px 1px #c51932,
-                1px 20px 1px #c51932,
+                1px 19px 1px #c51932,
                 1px 22px 1px #c51932,
-                1px 24px 1px #c51932,
-                1px 26px 1px #c51932,
+                1px 25px 1px #c51932,
                 1px 28px 1px #c51932,
-                1px 30px 7px rgba(0,0,0,.4);
+                1px 31px 1px #c51932,
+                1px 34px 1px #c51932,
+                1px 37px 1px #c51932,
+                1px 40px 1px #c51932,
+                1px 43px 1px #c51932,
+                1px 46px 7px rgba(0,0,0,.4);
     transition: all .3s ease;
     -moz-transition: all .3s ease;
     -webkit-transition: all .3s ease;
@@ -111,7 +111,13 @@ body {
                 1px 55px 1px #c51932,
                 1px 58px 1px #c51932,
                 1px 61px 1px #c51932,
-                1px 64px 7px rgba(0,0,0,.4);
+                1px 64px 1px #c51932,
+                1px 67px 1px #c51932,
+                1px 70px 1px #c51932,
+                1px 73px 1px #c51932,
+                1px 76px 1px #c51932,
+                1px 79px 1px #c51932,
+                1px 82px 7px rgba(0,0,0,.4);
 }
 
 #opponent [class*="cup"]:hover {
@@ -138,7 +144,12 @@ body {
             1px 55px 1px #962238,
             1px 58px 1px #962238,
             1px 61px 1px #962238,
-            1px 64px 8px rgba(0,0,0,.6);
+            1px 67px 1px #962238,
+            1px 70px 1px #962238,
+            1px 73px 1px #962238,
+            1px 76px 1px #962238,
+            1px 79px 1px #962238,
+            1px 82px 8px rgba(0,0,0,.6);
 }
 
 #me [class*="cup"] {
@@ -147,22 +158,22 @@ body {
 
 [class*="cup"]:hover {
     cursor: pointer;
-    box-shadow: 0 0 3px rgba(0,0,0,.2),
-                0 2px 1px #962238,
+    box-shadow: 0 1px 2px #74091d,
                 0 4px 1px #962238,
-                0 6px 1px #962238,
-                1px 8px 1px #962238,
-                1px 10px 1px #962238,
-                1px 12px 1px #962238,
-                1px 14px 1px #962238,
+                0 7px 1px #962238,
+                0 10px 1px #962238,
+                1px 13px 1px #962238,
                 1px 16px 1px #962238,
-                1px 18px 1px #962238,
-                1px 20px 1px #962238,
+                1px 19px 1px #962238,
                 1px 22px 1px #962238,
-                1px 24px 1px #962238,
-                1px 26px 1px #962238,
+                1px 25px 1px #962238,
                 1px 28px 1px #962238,
-                1px 30px 8px rgba(0,0,0,.6);
+                1px 31px 1px #962238,
+                1px 34px 1px #962238,
+                1px 37px 1px #962238,
+                1px 40px 1px #962238,
+                1px 43px 1px #962238,
+                1px 46px 8px rgba(0,0,0,.6);
 }
 
 .hiddenCup {
