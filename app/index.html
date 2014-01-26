@@ -25,16 +25,17 @@
                 <input type="button" class="btn btn-danger" id="restartButton" value="New Game" onClick="restartGame()">
                 <h3 class="status" id="status"></h3>
                 <h3 class="status" id="shotStatus"></h3>
+                <input type="button" class="btn btn-default" id="rerackButton" onclick="rerack()" value="Rerack" style="display: none;">
 
                 <label for="xBar">Position: </label><progress id="xBar" value="0" max="100"></progress>
                 <label for="thetaBar">  Angle: </label><progress id="thetaBar" value="0" max="100"></progress>
                 <label for="powerBar">  Power: </label><progress id="powerBar" value="0" max="100"></progress>
+            <div>Hold and release the <b>enter</b> key to set your position, angle, and power.</div>
             </div>
 
         </div>
 
         <div class="container">
-            <input type="button" class="btn btn-default" id="rerackButton" onclick="rerack()" value="Rerack" style="display: none;">
             <div class="table">
                 <div id="opponent" class="player">
                     <div class="tableRow">
